@@ -31,9 +31,10 @@ struct Token
 
 Token newToken(TokenType type, string literal)
 {
-    Token t = new Token;
+    Token t = Token();
     t.type = type;
     t.literal = literal;
+    return t;
 }
 
 unittest
@@ -44,8 +45,8 @@ unittest
 
     Token b = Token(TokenType.Assign, "=");
 
+    // assert reading strings are of correct length
     assert(b.type == TokenType.Assign);
-
     assert(b.literal == "=");
     assert(b.literal.length == 1);
 
