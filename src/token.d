@@ -14,8 +14,8 @@ enum TokenType
     Comma,
     Semicolon,
 
-    LeftParent,
-    RightParent,
+    LeftParen,
+    RightParen,
     LeftBrace,
     RightBrace,
 
