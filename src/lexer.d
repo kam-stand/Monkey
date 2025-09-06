@@ -29,6 +29,12 @@ class Lexer
                 tokens ~= newToken(TokenType.Plus, "+");
                 break;
             case '=':
+                if (peekNext() == '=')
+                {
+                    tokens ~= newToken(TokenType.EqualEqual, "==");
+                    current++;
+                    break;
+                }
                 tokens ~= newToken(TokenType.Assign, "=");
                 break;
             case '-':
@@ -41,6 +47,13 @@ class Lexer
                 tokens ~= newToken(TokenType.Asterisk, "*");
                 break;
             case '!':
+                if (peekNext() == '=')
+                {
+                    tokens ~= newToken(TokenType.NotEqual, "!=");
+                    current++;
+                    break;
+                }
+
                 tokens ~= newToken(TokenType.Bang, "!");
                 break;
             case '>':
@@ -92,6 +105,11 @@ class Lexer
         if (isAtEnd())
             return '\0'; // sentinel
         return cast(char) source[current];
+    }
+
+    char peekNext()
+    {
+        return current + 1 >= source.length ? '\0' : source[current + 1];
     }
 
     bool isAtEnd()
@@ -282,5 +300,30 @@ unittest
     assert(tokens[3].type == TokenType.Slash);
     assert(tokens[4].type == TokenType.Bang);
     assert(tokens[5].type == TokenType.Minus);
+
+}
+
+unittest
+{
+    auto source_file = "test.monnkey";
+    string content = "== != =";
+    import std.file;
+
+    write(source_file, content);
+    scope (exit)
+    {
+        assert(exists(source_file));
+        remove(source_file);
+    }
+
+    auto input = cast(byte[]) read(source_file);
+    Lexer lex = new Lexer(input);
+    auto tokens = lex.lexTokens();
+
+    assert(tokens.length == 4); // after lexing the number of tokens must be 4 for each token type not char
+
+    assert(tokens[0].type == TokenType.EqualEqual);
+    assert(tokens[1].type == TokenType.NotEqual);
+    assert(tokens[2].type == TokenType.Assign);
 
 }

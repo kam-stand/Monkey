@@ -18,6 +18,8 @@ enum TokenType
 
     LessThan,
     GreaterThan,
+    EqualEqual,
+    NotEqual,
     // delimmmetters
     Comma,
     Semicolon,
