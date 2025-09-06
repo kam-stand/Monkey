@@ -5,22 +5,35 @@ enum TokenType
     Illegal,
     Eof,
 
+    // literals
     Ident,
     Int,
-
+    // operators
     Assign,
     Plus,
+    Minus,
+    Slash,
+    Bang,
+    Asterisk,
 
+    LessThan,
+    GreaterThan,
+    // delimmmetters
     Comma,
     Semicolon,
-
+    // blocks
     LeftParen,
     RightParen,
     LeftBrace,
     RightBrace,
-
+    // keyowrds
     Function,
-    Let
+    Let,
+    True,
+    False,
+    If,
+    Else,
+    Return
 }
 
 struct Token
@@ -35,6 +48,27 @@ Token newToken(TokenType type, string literal)
     t.type = type;
     t.literal = literal;
     return t;
+}
+
+TokenType[string] keywords = [
+    "fn": TokenType.Function,
+    "let": TokenType.Let,
+    "true": TokenType.True,
+    "false": TokenType.False,
+    "if": TokenType.If,
+    "else": TokenType.Else,
+    "return": TokenType.Return
+
+];
+
+TokenType lookUpIdent(string ident)
+{
+    if (ident in keywords)
+    {
+        return keywords[ident];
+    }
+
+    return TokenType.Ident;
 }
 
 unittest
