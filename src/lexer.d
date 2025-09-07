@@ -19,9 +19,9 @@ class Lexer
     {
         tokens = [];
 
-        while (current < source.length)
+        while (!isAtEnd())
         {
-            char ch = cast(char) source[current];
+            char ch = advance();
 
             switch (ch)
             {
@@ -29,12 +29,11 @@ class Lexer
                 tokens ~= newToken(TokenType.Plus, "+");
                 break;
             case '=':
-                if (peekNext() == '=')
-                {
+                if (match('='))
                     tokens ~= newToken(TokenType.EqualEqual, "==");
-                    current++;
-                    break;
-                }
+                else
+                    tokens ~= newToken(TokenType.Assign, "=");
+                break;
                 tokens ~= newToken(TokenType.Assign, "=");
                 break;
             case '-':
@@ -47,14 +46,10 @@ class Lexer
                 tokens ~= newToken(TokenType.Asterisk, "*");
                 break;
             case '!':
-                if (peekNext() == '=')
-                {
+                if (match('='))
                     tokens ~= newToken(TokenType.NotEqual, "!=");
-                    current++;
-                    break;
-                }
-
-                tokens ~= newToken(TokenType.Bang, "!");
+                else
+                    tokens ~= newToken(TokenType.Bang, "!");
                 break;
             case '>':
                 tokens ~= newToken(TokenType.GreaterThan, ">");
@@ -68,11 +63,11 @@ class Lexer
             case '}':
                 tokens ~= newToken(TokenType.RightBrace, "}");
                 break;
-            case '[':
-                tokens ~= newToken(TokenType.LeftParen, "[");
+            case '(':
+                tokens ~= newToken(TokenType.LeftParen, "(");
                 break;
-            case ']':
-                tokens ~= newToken(TokenType.RightParen, "]");
+            case ')':
+                tokens ~= newToken(TokenType.RightParen, ")");
                 break;
             case ';':
                 tokens ~= newToken(TokenType.Semicolon, ";");
@@ -86,18 +81,24 @@ class Lexer
                 if (isDigit(ch))
                 {
                     tokens ~= lexNumber();
+                    break;
                 }
                 else if (isAlpha(ch))
                 {
                     tokens ~= lexString();
+                    break;
                 }
                 break;
             }
 
-            current++; // advance
         }
         tokens ~= newToken(TokenType.Eof, null); // append eof 
         return tokens;
+    }
+
+    char advance()
+    {
+        return source[current++];
     }
 
     char peek()
@@ -107,9 +108,15 @@ class Lexer
         return cast(char) source[current];
     }
 
-    char peekNext()
+    bool match(char expected)
     {
-        return current + 1 >= source.length ? '\0' : source[current + 1];
+        if (isAtEnd())
+            return false;
+        if (source[current] != expected)
+            return false;
+
+        current++; // consume it
+        return true;
     }
 
     bool isAtEnd()
@@ -119,10 +126,10 @@ class Lexer
 
     Token lexNumber()
     {
-        int start = current;
+        int start = current - 1;
         while (!isAtEnd() && isDigit(peek()))
         {
-            current++;
+            advance();
         }
         // Slice out the number string
         string value = cast(string) source[start .. current];
@@ -132,10 +139,10 @@ class Lexer
 
     Token lexString()
     {
-        int start = current;
+        int start = current - 1;
         while (!isAtEnd() && isAlpha(peek()))
         {
-            current++;
+            advance();
         }
 
         string literal = cast(string) source[start .. current];
@@ -325,5 +332,53 @@ unittest
     assert(tokens[0].type == TokenType.EqualEqual);
     assert(tokens[1].type == TokenType.NotEqual);
     assert(tokens[2].type == TokenType.Assign);
+
+}
+
+unittest
+{
+    auto source_file = "test.monnkey";
+    string content = "()";
+    import std.file;
+
+    write(source_file, content);
+    scope (exit)
+    {
+        assert(exists(source_file));
+        remove(source_file);
+    }
+
+    auto input = cast(byte[]) read(source_file);
+    Lexer lex = new Lexer(input);
+    auto tokens = lex.lexTokens();
+
+    assert(tokens.length == 3); // after lexing the number of tokens must be 4 for each token type not char
+
+    assert(tokens[0].type == TokenType.LeftParen);
+    assert(tokens[1].type == TokenType.RightParen);
+    assert(tokens[2].type == TokenType.Eof);
+
+}
+
+unittest
+{
+    auto source_file = "test.monnkey";
+    string content = "fn(x,y)";
+    import std.file;
+
+    write(source_file, content);
+    scope (exit)
+    {
+        assert(exists(source_file));
+        remove(source_file);
+    }
+
+    auto input = cast(byte[]) read(source_file);
+    Lexer lex = new Lexer(input);
+    auto tokens = lex.lexTokens();
+
+    assert(tokens[0].type == TokenType.Function);
+    assert(tokens[1].type == TokenType.LeftParen);
+    assert(tokens[2].type == TokenType.Ident);
 
 }
