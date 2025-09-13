@@ -57,14 +57,23 @@ class Parser
         return previous();
     }
 
+    Token* consume(TokenType type, string message)
+    {
+        if (check(type))
+            return advance();
+
+        throw new Exception(message);
+    }
+
     Program parseProgram()
     {
         Statement*[] statements;
 
         while (!isAtEnd())
         {
-            statements ~= parseStatement();
             writefln("[TYPE: %s LITERAL: %s", peek().type, peek().literal);
+
+            statements ~= parseStatement();
         }
 
         return Program(statements);
@@ -72,12 +81,40 @@ class Parser
 
     Statement* parseStatement()
     {
-        return new Statement();
+        if (match([TokenType.Let]))
+        {
+            return parseLetStatement();
+        }
+        return parseExpressionStatement();
+    }
+
+    Statement* parseLetStatement()
+    {
+        // expect identifier
+        Token* name = consume(TokenType.Ident, "Expected identifier after 'let'");
+
+        consume(TokenType.Assign, "Expected '=' after identifier in let statement");
+
+        Expression* initializer = parseExpression();
+
+        consume(TokenType.Semicolon, "Expected ';' after variable declaration");
+
+        return newLetStatement(name, initializer); // <- make AST node
+    }
+
+    Statement* parseExpressionStatement()
+    {
+        Expression* expr = parseExpression();
+
+        if (match([TokenType.Semicolon]))
+        { /* optional */ }
+
+        return newExpressionStatement(expr);
     }
 
     Expression* parseExpression()
     {
-        return new Expression();
+        return parseEquality();
     }
 
     Expression* parseEquality()

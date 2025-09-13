@@ -40,6 +40,25 @@ struct BinaryExpression
     Expression* right;
 }
 
+struct ExpressionStatement
+{
+    Expression* expression;
+}
+
+ExpressionStatement* makeExpressionStatement(Expression* expr)
+{
+    return new ExpressionStatement(expr);
+}
+
+Statement* newExpressionStatement(Expression* expr)
+{
+    auto exprStmt = makeExpressionStatement(expr);
+    Statement* stmt = new Statement();
+    stmt.type = StatementType.Expression;
+    stmt.expressionStmt = exprStmt;
+    return stmt;
+}
+
 BinaryExpression* makeBinaryExpression(Expression* left, Token* op, Expression* right)
 {
     return new BinaryExpression(left, op, right);
@@ -108,6 +127,15 @@ LetStatement* makeLetStatement(Token* name, Expression* expr)
     return new LetStatement(name, expr);
 }
 
+Statement* newLetStatement(Token* name, Expression* expr)
+{
+    auto let_ = makeLetStatement(name, expr);
+    Statement* statement = new Statement();
+    statement.let = let_;
+    statement.type = StatementType.Let;
+    return statement;
+}
+
 enum StatementType
 {
     Let,
@@ -121,7 +149,7 @@ struct Statement
     union
     {
         LetStatement* let;
-        Expression* expression;
+        ExpressionStatement* expressionStmt; // <- instead of raw Expression*
         Value* value;
     }
 }
