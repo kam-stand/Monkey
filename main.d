@@ -2,6 +2,8 @@ import token;
 import lexer;
 import std.stdio;
 import std.string;
+import parser;
+import ast;
 
 void main(string[] args)
 {
@@ -19,9 +21,10 @@ void main(string[] args)
         auto source = cast(byte[]) line;
         Lexer lex = new Lexer(source);
         auto tokens = lex.lexTokens();
-        foreach (token; tokens)
+        writeln(tokens.length);
+        foreach (t; tokens)
         {
-            writefln("[Type: %s, Literal: %s]", token.type, token.literal);
+            writefln("[TYPE: %s, LITERAL: %s]", t.type, t.literal);
         }
 
     }

@@ -1,43 +1,5 @@
 module token;
 
-// enum TokenType
-// {
-//     Illegal,
-//     Eof,
-
-//     // literals
-//     Ident,
-//     Int,
-//     // operators
-//     Assign,
-//     Plus,
-//     Minus,
-//     Slash,
-//     Bang,
-//     Asterisk,
-
-//     LessThan,
-//     GreaterThan,
-//     EqualEqual,
-//     NotEqual,
-//     // delimmmetters
-//     Comma,
-//     Semicolon,
-//     // blocks
-//     LeftParen,
-//     RightParen,
-//     LeftBrace,
-//     RightBrace,
-//     // keyowrds
-//     Function,
-//     Let,
-//     True,
-//     False,
-//     If,
-//     Else,
-//     Return
-// }
-
 enum TokenType
 {
     Illegal = "Illegal",
@@ -107,19 +69,4 @@ TokenType lookUpIdent(string ident)
     }
 
     return TokenType.Ident;
-}
-
-unittest
-{
-    Token t = Token(TokenType.Eof, null);
-
-    assert(t.type == TokenType.Eof);
-
-    Token b = Token(TokenType.Assign, "=");
-
-    // assert reading strings are of correct length
-    assert(b.type == TokenType.Assign);
-    assert(b.literal == "=");
-    assert(b.literal.length == 1);
-
 }

@@ -41,7 +41,35 @@ struct ExpressionStatement
     Expression expression;
 }
 
+enum ValueType
+{
+    Identifier,
+    Integer,
+    Boolean,
+    String
+}
+
+struct Value
+{
+    union
+    {
+        string ident;
+        bool val;
+        int integer;
+        string str;
+    }
+}
+
 struct Expression
 {
+    ValueType type;
 
+    Value value; // TODO: Implement other expression structs
+    union
+    {
+        string ident;
+        bool val;
+        int integer;
+        string str;
+    }
 }
