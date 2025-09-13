@@ -1,5 +1,6 @@
 import token;
 import lexer;
+import astprinter;
 
 import std.stdio;
 import std.string;
@@ -24,6 +25,7 @@ void main(string[] args)
             writeln(stmt);
         }
         writeln(program.statements.length);
+        printAst(program);
 
     }
 }
