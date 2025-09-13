@@ -7,6 +7,7 @@ enum TokenType
     // literals
     Ident = "Ident",
     Int = "Int",
+    String = "String",
     // operators
     Assign = "Assign",
     Plus = "Plus",

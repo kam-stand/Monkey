@@ -83,7 +83,7 @@ class Lexer
                     tokens ~= lexNumber();
                     break;
                 }
-                else if (isAlpha(ch))
+                else if (isAlpha(ch)) // TODO: Make sure to add '"' support and white spaces
                 {
                     tokens ~= lexString();
                     break;
