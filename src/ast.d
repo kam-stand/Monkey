@@ -1,9 +1,10 @@
 module ast;
 import token;
+import literal;
 
 struct Program
 {
-    Statements[] statements;
+    Statements*[] statements;
 }
 
 enum StatementType
@@ -18,58 +19,49 @@ struct Statements
     StatementType type;
     union
     {
-        LetStatement let_;
-        ReturnStatement return_;
-        ExpressionStatement expression_;
+        LetStatement* let_;
+        ReturnStatement* return_;
+        ExpressionStatement* expression_;
     }
 
 }
 
 struct LetStatement
 {
-    Token ident;
-    Expression expression;
+    Token* let; // 'let'
+    Token* ident; // 'x'
+    Expression* expression; // 'expression'
 }
 
 struct ReturnStatement
 {
-    Expression expression;
+    Token* return_; // 'return'
+    Expression* expression; // 'expression'
 }
 
 struct ExpressionStatement
 {
-    Expression expression;
+    Expression* expression;
 }
 
-enum ValueType
+struct UnaryExpression
 {
-    Identifier,
-    Integer,
-    Boolean,
-    String
+    Token* operator;
+    Literal literal;
 }
 
-struct Value
+struct BinaryExpression
 {
-    union
-    {
-        string ident;
-        bool val;
-        int integer;
-        string str;
-    }
+    Expression* left;
+    Token* operator;
+    Expression* right;
 }
 
 struct Expression
 {
-    ValueType type;
-
-    Value value; // TODO: Implement other expression structs
     union
     {
-        string ident;
-        bool val;
-        int integer;
-        string str;
+        UnaryExpression* unary;
+        BinaryExpression* binary;
     }
 }

@@ -20,12 +20,6 @@ void main(string[] args)
         auto tokens = lexer.lexTokens();
         Parser parser = new Parser(tokens);
         auto program = parser.parseProgram();
-        foreach (stmt; program.statements)
-        {
-            writeln(stmt);
-        }
-        writeln(program.statements.length);
-        printAst(program);
 
     }
 }

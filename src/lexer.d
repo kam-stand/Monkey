@@ -7,7 +7,7 @@ class Lexer
 {
     byte[] source;
     int current; // current position in the source file
-    Token[] tokens;
+    Token*[] tokens;
 
     this(byte[] source)
     {
@@ -15,7 +15,7 @@ class Lexer
         this.current = 0;
     }
 
-    Token[] lexTokens()
+    Token*[] lexTokens()
     {
         tokens = [];
 
@@ -122,7 +122,7 @@ class Lexer
         return current >= source.length;
     }
 
-    Token lexNumber()
+    Token* lexNumber()
     {
         int start = current - 1;
         while (!isAtEnd() && isDigit(peek()))
@@ -135,7 +135,7 @@ class Lexer
 
     }
 
-    Token lexString()
+    Token* lexString()
     {
         int start = current - 1;
         while (!isAtEnd() && isAlpha(peek()))

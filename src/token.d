@@ -43,12 +43,10 @@ struct Token
     string literal;
 }
 
-Token newToken(TokenType type, string literal)
+Token* newToken(TokenType type, string literal)
 {
-    Token t = Token();
-    t.type = type;
-    t.literal = literal;
-    return t;
+    return new Token(type, literal);
+
 }
 
 TokenType[string] keywords = [
