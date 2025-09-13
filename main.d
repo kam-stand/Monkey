@@ -1,11 +1,7 @@
 import token;
 import lexer;
-import astprinter;
-
 import std.stdio;
 import std.string;
-import parser;
-import ast;
 
 void main(string[] args)
 {
@@ -18,8 +14,6 @@ void main(string[] args)
 
         Lexer lexer = new Lexer(cast(byte[]) line);
         auto tokens = lexer.lexTokens();
-        Parser parser = new Parser(tokens);
-        auto program = parser.parseProgram();
 
     }
 }
