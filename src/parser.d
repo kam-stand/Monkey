@@ -105,10 +105,7 @@ class Parser
     Statement* parseExpressionStatement()
     {
         Expression* expr = parseExpression();
-
-        if (match([TokenType.Semicolon]))
-        { /* optional */ }
-
+        consume(TokenType.Semicolon, "Expected ';' after expression statement");
         return newExpressionStatement(expr);
     }
 
