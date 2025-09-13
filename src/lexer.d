@@ -34,8 +34,6 @@ class Lexer
                 else
                     tokens ~= newToken(TokenType.Assign, "=");
                 break;
-                tokens ~= newToken(TokenType.Assign, "=");
-                break;
             case '-':
                 tokens ~= newToken(TokenType.Minus, "-");
                 break;

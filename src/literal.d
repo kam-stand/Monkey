@@ -1,4 +1,4 @@
-module value;
+module literal;
 
 enum LiteralType
 {
