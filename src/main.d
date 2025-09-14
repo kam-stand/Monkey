@@ -2,6 +2,7 @@ module main;
 import lex.lexer;
 import std.stdio;
 import std.string;
+import tokens.token;
 
 enum PROMPT = ">> ";
 enum WELCOME = "Welcome to monkey!";
@@ -16,7 +17,12 @@ void main(string[] args)
         if (source_file is null)
             break;
         auto lexer = new Lexer(source_file);
-        lexer.lexSource();
+        auto tokens = lexer.lexSource();
+
+        foreach (key; tokens)
+        {
+            writeln(key.literal);
+        }
 
     }
 

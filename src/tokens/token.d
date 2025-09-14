@@ -7,6 +7,7 @@ enum TokenType
     // Identifier, Literals
     Ident,
     Int,
+    String,
     // operators
     Assign,
     Plus,
@@ -28,4 +29,9 @@ struct Token
 {
     TokenType type;
     string literal;
+}
+
+Token* initToken(TokenType type, string literal)
+{
+    return new Token(type, literal);
 }
