@@ -14,16 +14,42 @@ class Lexer
         this.source_file = source_file;
     }
 
+    bool isAtEnd()
+    {
+        return index >= source_file.length;
+    }
+
+    char peek()
+    {
+        return source_file[index];
+    }
+
     Token*[] lexSource()
     {
         Token*[] tokens;
 
-        while (index < source_file.length)
+        while (!isAtEnd())
         {
-            switch (source_file[index])
+
+            switch (peek())
             {
             case '+':
                 tokens ~= initToken(TokenType.Plus, "+");
+                break;
+            case '-':
+                tokens ~= initToken(TokenType.Minus, "-");
+                break;
+            case '!':
+                tokens ~= initToken(TokenType.Bang, "!");
+                break;
+            case '*':
+                tokens ~= initToken(TokenType.Asterisk, "*");
+                break;
+            case '>':
+                tokens ~= initToken(TokenType.GreaterThan, ">");
+                break;
+            case '<':
+                tokens ~= initToken(TokenType.LessThan, "<");
                 break;
             case '=':
                 tokens ~= initToken(TokenType.Assign, "=");
@@ -47,15 +73,15 @@ class Lexer
                 tokens ~= initToken(TokenType.RightParen, ")");
                 break;
             default:
-                if (isDigit(source_file[index]))
+                if (isDigit(peek()))
                 {
                     tokens ~= lexNumber();
                 }
-                else if (isAlpha(source_file[index]))
+                else if (isAlpha(peek()))
                 {
                     tokens ~= lexLetter();
                 }
-                else if (source_file[index] == '"')
+                else if (peek() == '"')
                 {
                     tokens ~= lexString();
                 }
@@ -73,19 +99,20 @@ class Lexer
     Token* lexNumber()
     {
         int start = index;
-        while (index < source_file.length && isDigit(source_file[index]))
+        while (!isAtEnd() && isDigit(peek()))
         {
             index++;
         }
 
-        return initToken(TokenType.Int, cast(string) source_file[start .. index]);
+        auto literal = cast(string) source_file[start .. index];
+        return initToken(TokenType.Int, literal);
     }
 
     Token* lexLetter()
     {
 
         int start = index;
-        while (index < source_file.length && isAlpha(source_file[index]))
+        while (!isAtEnd() && isAlpha(peek()))
         {
             index++;
         }
@@ -99,12 +126,13 @@ class Lexer
         int start = index + 1; // skip the opening quote
         index++;
 
-        while (index < source_file.length && source_file[index] != '"')
+        while (!isAtEnd() && peek() != '"')
         {
             index++;
         }
 
-        return initToken(TokenType.String, cast(string) source_file[start .. index]);
+        auto literal = cast(string) source_file[start .. index];
+        return initToken(TokenType.String, literal);
 
         index++; // skip closing quote
     }
