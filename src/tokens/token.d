@@ -22,7 +22,13 @@ enum TokenType
 
     // keywords
     Function,
-    Let
+    Let,
+    If,
+    Else,
+    Return,
+    True,
+    False
+
 }
 
 struct Token
@@ -31,7 +37,22 @@ struct Token
     string literal;
 }
 
+static const TokenType[string] keywords = [
+    "fn": TokenType.Function,
+    "let": TokenType.Let,
+    "true": TokenType.True,
+    "false": TokenType.False,
+    "if": TokenType.If,
+    "else": TokenType.Else,
+    "return": TokenType.Return
+];
+
 Token* initToken(TokenType type, string literal)
 {
     return new Token(type, literal);
+}
+
+TokenType lookUpIdent(string ident)
+{
+    return ident in keywords ? keywords[ident] : TokenType.Ident;
 }

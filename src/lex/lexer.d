@@ -49,22 +49,15 @@ class Lexer
             default:
                 if (isDigit(source_file[index]))
                 {
-                    int start = index;
-                    while (isDigit(source_file[index]))
-                    {
-                        index++;
-                    }
-
-                    tokens ~= initToken(TokenType.Int, cast(string) source_file[start .. index]);
+                    tokens ~= lexNumber();
                 }
                 else if (isAlpha(source_file[index]))
                 {
-                    int start = index;
-                    while (isAlpha(source_file[index]))
-                    {
-                        index++;
-                    }
-                    tokens ~= initToken(TokenType.Ident, cast(string) source_file[start .. index]);
+                    tokens ~= lexLetter();
+                }
+                else if (source_file[index] == '"')
+                {
+                    tokens ~= lexString();
                 }
                 break;
             }
@@ -77,4 +70,42 @@ class Lexer
         return tokens;
     }
 
+    Token* lexNumber()
+    {
+        int start = index;
+        while (index < source_file.length && isDigit(source_file[index]))
+        {
+            index++;
+        }
+
+        return initToken(TokenType.Int, cast(string) source_file[start .. index]);
+    }
+
+    Token* lexLetter()
+    {
+
+        int start = index;
+        while (index < source_file.length && isAlpha(source_file[index]))
+        {
+            index++;
+        }
+        auto literal = cast(string) source_file[start .. index];
+        auto type = lookUpIdent(literal);
+        return initToken(type, literal);
+    }
+
+    Token* lexString()
+    {
+        int start = index + 1; // skip the opening quote
+        index++;
+
+        while (index < source_file.length && source_file[index] != '"')
+        {
+            index++;
+        }
+
+        return initToken(TokenType.String, cast(string) source_file[start .. index]);
+
+        index++; // skip closing quote
+    }
 }
