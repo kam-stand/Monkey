@@ -18,7 +18,7 @@ void main(string[] args)
             break;
         auto lexer = new Lexer(source_file);
         auto tokens = lexer.lexSource();
-
+        writefln("TOKENS: %d", tokens.length);
         foreach (key; tokens)
         {
             writefln("[LITERAL: %s], [TYPE: %s]", key.literal, key.type);
