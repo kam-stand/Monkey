@@ -20,7 +20,7 @@ unittest
 
     auto tokens = lexer.lexSource();
     assert(tokens !is null);
-    assert(tokens.length == 10); // MUST HAVE EOF
+    assert(tokens.length == 11); // MUST HAVE EOF
 }
 
 unittest
@@ -51,7 +51,7 @@ unittest
     assert(tokens.length == 4);
     assert(tokens[1].type == TokenType.String);
     assert(tokens[1].literal == "hello");
-    assert(tokens[1].literal.length == "hello".length);
+    assert(tokens[1].literal.length == "hello".length); // String length literal are of same size
     assert(tokens[0].type == TokenType.Return);
     assert(tokens[0].literal == "return");
 
@@ -86,4 +86,18 @@ unittest
     assert(tokens[3].type == TokenType.Function);
     assert(tokens[4].type == TokenType.LeftParen);
     assert(tokens[5].type == TokenType.Ident);
+}
+
+unittest
+{
+    string content = "@?$";
+    auto source_file = cast(ubyte[]) content;
+    Lexer lexer = new Lexer(source_file);
+
+    auto tokens = lexer.lexSource();
+    assert(tokens.length == 4);
+    assert(tokens[0].type == TokenType.Illegal); // MUST BE Illegal
+    assert(tokens[1].type == TokenType.Illegal); // MUST BE Illegal
+    assert(tokens[2].type == TokenType.Illegal); // MUST BE Illegal
+
 }
