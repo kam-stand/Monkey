@@ -31,12 +31,12 @@ unittest
 
     auto tokens = lexer.lexSource();
     assert(tokens !is null);
-    assert(tokens.length == 7);
-    assert(tokens[2].type == TokenType.Bang);
-    assert(tokens[2].literal == "!");
+    assert(tokens.length == 6);
+    assert(tokens[2].type == TokenType.NotEqual);
+    assert(tokens[2].literal == "!=");
 
-    assert(tokens[5].type == TokenType.Comma);
-    assert(tokens[5].literal == ",");
+    assert(tokens[4].type == TokenType.Comma);
+    assert(tokens[4].literal == ",");
 
 }
 
