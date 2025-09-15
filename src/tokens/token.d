@@ -50,7 +50,10 @@ static const TokenType[string] keywords = [
     "false": TokenType.False,
     "if": TokenType.If,
     "else": TokenType.Else,
-    "return": TokenType.Return
+    "return": TokenType.Return,
+    "true": TokenType.True,
+    "false": TokenType.False
+
 ];
 
 Token* initToken(TokenType type, string literal)
