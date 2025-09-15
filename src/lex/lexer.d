@@ -19,6 +19,14 @@ class Lexer
         return index >= source_file.length;
     }
 
+    bool isWhiteSpace(char c)
+    {
+        if (c == ' ' || c == '\t' || c == '\n')
+            return true;
+
+        return false;
+    }
+
     char peek()
     {
         return source_file[index];
@@ -37,6 +45,11 @@ class Lexer
         {
             char c = peek();
 
+            if (isWhiteSpace(c)) // skip white spaces
+            {
+                index++;
+                continue;
+            }
             switch (c)
             {
             case '+':
@@ -123,6 +136,7 @@ class Lexer
                 else
                 {
                     // skip unknown characters
+                    tokens ~= initToken(TokenType.Illegal, c.to!string);
                     index++;
                 }
                 break;
