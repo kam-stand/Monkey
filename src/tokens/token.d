@@ -11,6 +11,12 @@ enum TokenType
     // operators
     Assign,
     Plus,
+    Minus,
+    Bang,
+    Asterisk,
+
+    GreaterThan, // >
+    LessThan, // <
     // Delimitters
     Comma,
     Semicolon,
