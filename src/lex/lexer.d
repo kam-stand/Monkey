@@ -24,6 +24,11 @@ class Lexer
         return source_file[index];
     }
 
+    char peekNext()
+    {
+        return source_file[index + 1];
+    }
+
     Token*[] lexSource()
     {
         Token*[] tokens;
@@ -40,6 +45,12 @@ class Lexer
                 tokens ~= initToken(TokenType.Minus, "-");
                 break;
             case '!':
+                if (peekNext() == '=')
+                {
+                    tokens ~= initToken(TokenType.NotEqual, "!=");
+                    index++;
+                    break;
+                }
                 tokens ~= initToken(TokenType.Bang, "!");
                 break;
             case '*':
@@ -52,6 +63,12 @@ class Lexer
                 tokens ~= initToken(TokenType.LessThan, "<");
                 break;
             case '=':
+                if (peekNext() == '=')
+                {
+                    tokens ~= initToken(TokenType.EqualEqual, "==");
+                    index++;
+                    break;
+                }
                 tokens ~= initToken(TokenType.Assign, "=");
                 break;
             case ';':

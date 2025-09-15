@@ -14,9 +14,12 @@ enum TokenType
     Minus,
     Bang,
     Asterisk,
+    NotEqual, // !=
+    EqualEqual, // ==
 
     GreaterThan, // >
     LessThan, // <
+
     // Delimitters
     Comma,
     Semicolon,
