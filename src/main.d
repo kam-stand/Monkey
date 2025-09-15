@@ -21,7 +21,7 @@ void main(string[] args)
 
         foreach (key; tokens)
         {
-            writeln(key.literal);
+            writeln(key.literal, key.type);
         }
 
     }

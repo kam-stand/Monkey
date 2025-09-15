@@ -8,7 +8,6 @@ class Lexer
 {
     ubyte[] source_file;
     int index = 0;
-    int start = 0;
 
     this(ubyte[] source_file)
     {
@@ -21,63 +20,55 @@ class Lexer
 
         while (index < source_file.length)
         {
-            start = index;
-            char ch = cast(char) source_file[index];
-            writefln("LITERAL: %c, START: %d END: %d", ch, start, index);
-            switch (ch)
+            switch (source_file[index])
             {
             case '+':
                 tokens ~= initToken(TokenType.Plus, "+");
-                index++;
                 break;
             case '=':
-                tokens ~= initToken(TokenType.Plus, "=");
-                index++;
+                tokens ~= initToken(TokenType.Assign, "=");
+                break;
+            case ';':
+                tokens ~= initToken(TokenType.Semicolon, ";");
+                break;
+            case ',':
+                tokens ~= initToken(TokenType.Comma, ",");
                 break;
             case '{':
-                tokens ~= initToken(TokenType.Plus, "+");
-                index++;
+                tokens ~= initToken(TokenType.LeftBrace, "{");
                 break;
             case '}':
-                tokens ~= initToken(TokenType.Plus, "+");
-                index++;
+                tokens ~= initToken(TokenType.RightBrace, "}");
                 break;
             case '(':
-                tokens ~= initToken(TokenType.Plus, "+");
-                index++;
+                tokens ~= initToken(TokenType.LeftParen, "(");
                 break;
             case ')':
-                tokens ~= initToken(TokenType.Plus, "+");
-                index++;
-                break;
-            case ' ':
-                index++;
-                break;
-            case '\t':
-                index++;
-                break;
-            case '\n':
-                index++;
+                tokens ~= initToken(TokenType.RightParen, ")");
                 break;
             default:
-
-                if (isDigit(ch))
+                if (isDigit(source_file[index]))
                 {
-                    int numberStart = index;
-                    while (index < source_file.length && isDigit(cast(char) source_file[index]))
+                    int start = index;
+                    while (isDigit(source_file[index]))
                     {
                         index++;
                     }
-                    tokens ~= initToken(TokenType.Int, cast(string) source_file[numberStart .. index]);
+
+                    tokens ~= initToken(TokenType.Int, cast(string) source_file[start .. index]);
                 }
-                else
+                else if (isAlpha(source_file[index]))
                 {
-                    index++; // skip unknown/illegal character
-                    tokens ~= initToken(TokenType.Illegal, cast(string) source_file[start .. index]);
+                    int start = index;
+                    while (isAlpha(source_file[index]))
+                    {
+                        index++;
+                    }
+                    tokens ~= initToken(TokenType.Ident, cast(string) source_file[start .. index]);
                 }
-
+                break;
             }
-
+            index++;
         }
 
         // EOF token
