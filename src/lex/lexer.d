@@ -35,81 +35,102 @@ class Lexer
 
         while (!isAtEnd())
         {
+            char c = peek();
 
-            switch (peek())
+            switch (c)
             {
             case '+':
                 tokens ~= initToken(TokenType.Plus, "+");
+                index++;
                 break;
             case '-':
                 tokens ~= initToken(TokenType.Minus, "-");
+                index++;
                 break;
             case '!':
-                if (peekNext() == '=')
+                if (!isAtEnd() && peekNext() == '=')
                 {
                     tokens ~= initToken(TokenType.NotEqual, "!=");
-                    index++;
-                    break;
+                    index += 2; // consume both '!' and '='
                 }
-                tokens ~= initToken(TokenType.Bang, "!");
+                else
+                {
+                    tokens ~= initToken(TokenType.Bang, "!");
+                    index++;
+                }
                 break;
             case '*':
                 tokens ~= initToken(TokenType.Asterisk, "*");
+                index++;
                 break;
             case '>':
                 tokens ~= initToken(TokenType.GreaterThan, ">");
+                index++;
                 break;
             case '<':
                 tokens ~= initToken(TokenType.LessThan, "<");
+                index++;
                 break;
             case '=':
-                if (peekNext() == '=')
+                if (!isAtEnd() && peekNext() == '=')
                 {
                     tokens ~= initToken(TokenType.EqualEqual, "==");
-                    index++;
-                    break;
+                    index += 2;
                 }
-                tokens ~= initToken(TokenType.Assign, "=");
+                else
+                {
+                    tokens ~= initToken(TokenType.Assign, "=");
+                    index++;
+                }
                 break;
             case ';':
                 tokens ~= initToken(TokenType.Semicolon, ";");
+                index++;
                 break;
             case ',':
                 tokens ~= initToken(TokenType.Comma, ",");
+                index++;
                 break;
             case '{':
                 tokens ~= initToken(TokenType.LeftBrace, "{");
+                index++;
                 break;
             case '}':
                 tokens ~= initToken(TokenType.RightBrace, "}");
+                index++;
                 break;
             case '(':
                 tokens ~= initToken(TokenType.LeftParen, "(");
+                index++;
                 break;
             case ')':
                 tokens ~= initToken(TokenType.RightParen, ")");
+                index++;
                 break;
             default:
-                if (isDigit(peek()))
+                if (isDigit(c))
                 {
-                    tokens ~= lexNumber();
+                    tokens ~= lexNumber(); // lexNumber advances index
                 }
-                else if (isAlpha(peek()))
+                else if (isAlpha(c))
                 {
-                    tokens ~= lexLetter();
+                    tokens ~= lexLetter(); // lexLetter advances index
                 }
-                else if (peek() == '"')
+                else if (c == '"')
                 {
-                    tokens ~= lexString();
+                    tokens ~= lexString(); // lexString advances index
+                }
+                else
+                {
+                    // skip unknown characters
+                    index++;
                 }
                 break;
             }
-            index++;
         }
 
         // EOF token
         tokens ~= initToken(TokenType.Eof, "");
-
         return tokens;
     }
 
@@ -140,7 +161,7 @@ class Lexer
 
     Token* lexString()
     {
-        int start = index + 1; // skip the opening quote
+        int start = index + 1; // skip opening quote
         index++;
 
         while (!isAtEnd() && peek() != '"')
@@ -149,8 +170,9 @@ class Lexer
         }
 
         auto literal = cast(string) source_file[start .. index];
-        return initToken(TokenType.String, literal);
-
         index++; // skip closing quote
+
+        return initToken(TokenType.String, literal);
     }
+
 }

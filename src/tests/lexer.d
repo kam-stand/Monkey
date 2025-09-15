@@ -64,8 +64,26 @@ unittest
     Lexer lexer = new Lexer(source_file);
 
     auto tokens = lexer.lexSource();
-    assert(tokens.length == 5);
+    assert(tokens.length == 6);
     assert(tokens[0].type == TokenType.Let); // MUST BE IDENT
     assert(tokens[3].type == TokenType.Int); // MUST BE Int
 
+}
+
+unittest
+{
+    string content = "let add = fn(x,y) {x + y; };";
+    auto source_file = cast(ubyte[]) content;
+    Lexer lexer = new Lexer(source_file);
+
+    auto tokens = lexer.lexSource();
+
+    assert(tokens.length == 17);
+
+    assert(tokens[0].type == TokenType.Let);
+    assert(tokens[1].type == TokenType.Ident);
+    assert(tokens[2].type == TokenType.Assign);
+    assert(tokens[3].type == TokenType.Function);
+    assert(tokens[4].type == TokenType.LeftParen);
+    assert(tokens[5].type == TokenType.Ident);
 }
