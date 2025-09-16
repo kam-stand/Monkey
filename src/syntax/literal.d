@@ -1,4 +1,5 @@
 module syntax.literal;
+import std.conv : to;
 
 enum LiteralType
 {
@@ -18,11 +19,11 @@ struct Literal
     }
 }
 
-Literal* makeIntegerLiteral(int num)
+Literal* makeIntegerLiteral(string num)
 {
     auto literal = new Literal();
     literal.type = LiteralType.Int;
-    literal.num = num;
+    literal.num = to!int(num); // convert token literal (string) -> int
     return literal;
 }
 
@@ -34,10 +35,10 @@ Literal* makeStringLiteral(string str)
     return literal;
 }
 
-Literal* makeBooleanLiteral(bool val)
+Literal* makeBooleanLiteral(string val)
 {
     auto literal = new Literal();
     literal.type = LiteralType.Bool;
-    literal.val = val;
+    literal.val = to!bool(val); // convert token literal (string) --> boolean
     return literal;
 }
