@@ -11,7 +11,6 @@ enum StatementType
 
 struct ReturnStatement
 {
-    // TODO: Implement return statement 
     Token* ret;
     Expression* expr;
 }

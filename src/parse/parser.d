@@ -67,11 +67,9 @@ class Parser
         switch (peek().type)
         {
         case TokenType.Let:
-
             return parseLetStatement();
         case TokenType.Return:
-            break;
-            // TODO: parse Return and Expression statements
+            return parseReturnStatement();
         default:
             break;
         }
@@ -85,9 +83,13 @@ class Parser
         auto letTok = peek();
         advance(); // consume 'let'
 
-        // Next should be an identifier
-        auto identTok = peek();
-        advance();
+        // Exprect 'Ident'
+        if (!match(TokenType.Ident))
+        {
+            writeln("Parse error: expected identifier after 'let'.");
+            return null;
+        }
+        auto identTok = previous();
 
         // Expect '='
         if (!match(TokenType.Assign))
@@ -96,16 +98,36 @@ class Parser
             return null;
         }
 
-        // Parse the RHS expression
+        // Parse the RHS 
         auto expr = parseExpression();
 
-        // Optional semicolon
-        match(TokenType.Semicolon);
+        // Expect semicolon
+        if (!match(TokenType.Semicolon))
+        {
 
+            writeln("Parse error: expected ';' after expression.");
+            return null;
+        }
         // Construct the AST node
         auto letStmt = makeLetStatement(letTok, expr, identTok);
 
         return letStmt;
+    }
+
+    private Statement* parseReturnStatement()
+    {
+        auto ret_ = peek(); // we are at 'return'
+        advance(); // consume 'return'
+
+        auto expr = parseExpression(); // parse Expression
+
+        // Exprect ';'
+        if (!match(TokenType.Semicolon))
+        {
+            writeln("Parse errorL expected ';' after expression in return statement.");
+            return null;
+        }
+        return makeReturnStatement(ret_, expr);
     }
 
     private Expression* parseExpression()
@@ -195,7 +217,16 @@ class Parser
             auto lit = makeStringLiteral(previous().literal);
             return makeLiteralExpression(lit);
         }
-        // TODO: parse Parenthesis
+        if (match(TokenType.LeftParen))
+        {
+            auto expr = parseExpression();
+            if (!match(TokenType.RightParen))
+            {
+                writeln("Parse error: expected ')' after expression.");
+                return null;
+            }
+            return expr;
+        }
         // TODO: use switch statement
 
         return null;

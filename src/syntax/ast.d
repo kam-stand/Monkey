@@ -27,6 +27,9 @@ void printAst(Statement*[] statements)
         case StatementType.LetStatement:
             printLetStatement(stmt.let_);
             break;
+        case StatementType.ReturnStatement:
+            printReturnStatement(stmt.return_);
+            break;
         default:
             writeln("Unknown statement");
             break;
@@ -39,6 +42,15 @@ void printLetStatement(LetStatement* let_)
     writeln("LetStatement:");
     writefln("\t%s\n\t[IDENT]: %s =", let_.let.literal, let_.name.ident.literal);
     printExpression(let_.expr, 2);
+}
+
+void printReturnStatement(ReturnStatement* ret_)
+{
+
+    writeln("ReturnStatement:");
+    writefln("\t\n\t[RETURN]: %s =", ret_.ret.literal);
+    printExpression(ret_.expr, 2);
+
 }
 
 void printExpression(Expression* expr, int indent = 0)
