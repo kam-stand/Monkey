@@ -76,6 +76,10 @@ class Lexer
                 tokens ~= initToken(TokenType.Asterisk, "*");
                 index++;
                 break;
+            case '/':
+                tokens ~= initToken(TokenType.Slash, "/");
+                index++;
+                break;
             case '>':
                 tokens ~= initToken(TokenType.GreaterThan, ">");
                 index++;

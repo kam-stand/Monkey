@@ -12,6 +12,8 @@ enum StatementType
 struct ReturnStatement
 {
     // TODO: Implement return statement 
+    Token* ret;
+    Expression* expr;
 }
 
 struct LetStatement
@@ -29,4 +31,21 @@ struct Statement
         ReturnStatement* return_;
         LetStatement* let_;
     }
+}
+
+Statement* makeReturnStatement(Token* ret, Expression* expr)
+{
+    auto statement = new Statement();
+    statement.type = StatementType.ReturnStatement;
+    statement.return_ = new ReturnStatement(ret, expr);
+    return statement;
+}
+
+Statement* makeLetStatement(Token* let, Expression* expr, Token* ident)
+{
+    auto statement = new Statement();
+    statement.type = StatementType.LetStatement;
+    auto name = makeIdentifier(ident);
+    statement.let_ = new LetStatement(let, name, expr);
+    return statement;
 }

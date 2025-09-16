@@ -90,14 +90,15 @@ unittest
 
 unittest
 {
-    string content = "@?$";
+    string content = "@/$";
     auto source_file = cast(ubyte[]) content;
     Lexer lexer = new Lexer(source_file);
 
     auto tokens = lexer.lexSource();
     assert(tokens.length == 4);
     assert(tokens[0].type == TokenType.Illegal); // MUST BE Illegal
-    assert(tokens[1].type == TokenType.Illegal); // MUST BE Illegal
+    assert(tokens[1].type == TokenType.Slash); // MUST BE Slash
+    assert(tokens[1].literal == "/"); // MUST BE Slash
     assert(tokens[2].type == TokenType.Illegal); // MUST BE Illegal
 
 }

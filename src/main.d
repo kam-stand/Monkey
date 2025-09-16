@@ -3,6 +3,8 @@ import lex.lexer;
 import std.stdio;
 import std.string;
 import tokens.token;
+import parse.parser;
+import syntax.ast;
 
 enum PROMPT = ">> ";
 enum WELCOME = "Welcome to monkey!";
@@ -19,11 +21,8 @@ void main(string[] args)
         auto lexer = new Lexer(source_file);
         auto tokens = lexer.lexSource();
         writefln("TOKENS: %d", tokens.length);
-        foreach (key; tokens)
-        {
-            writefln("[LITERAL: %s], [TYPE: %s]", key.literal, key.type);
-        }
-
+        auto parser = new Parser(tokens).parseProgram();
+        writeln(parser.statements.length);
     }
 
 }

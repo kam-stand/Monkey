@@ -5,5 +5,9 @@ import syntax.identifier;
 struct Identifier
 {
     Token* ident;
-    Identifier* name;
+}
+
+Identifier* makeIdentifier(Token* ident)
+{
+    return new Identifier(ident);
 }
