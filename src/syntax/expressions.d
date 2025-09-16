@@ -1,10 +1,12 @@
 module syntax.expressions;
 import tokens.token;
+import syntax.literal;
 
 enum ExpressionType
 {
     Unary,
-    Binary
+    Binary,
+    Literal
 }
 
 struct UnaryExpression
@@ -28,7 +30,7 @@ struct Expression
     {
         UnaryExpression* unary;
         BinaryExpression* binary;
-        int val;
+        Literal* literal;
     }
 }
 
@@ -46,4 +48,12 @@ Expression* makeBinaryExpression(Expression* left, Token* operator, Expression* 
     binary.type = ExpressionType.Binary;
     binary.binary = new BinaryExpression(left, operator, right);
     return binary;
+}
+
+Expression* makeLiteralExpression(Literal* lit)
+{
+    auto literal = new Expression();
+    literal.type = ExpressionType.Literal;
+    literal.literal = lit;
+    return literal;
 }
