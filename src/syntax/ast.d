@@ -1,6 +1,7 @@
 module syntax.ast;
 import syntax.statements;
 import syntax.expressions;
+import syntax.literal;
 
 import std.stdio;
 import tokens.token;
@@ -36,7 +37,7 @@ void printAst(Statement*[] statements)
 void printLetStatement(LetStatement* let_)
 {
     writeln("LetStatement:");
-    writefln("\t%s %s =", let_.let.literal, let_.name.ident.literal);
+    writefln("\t%s\n\t[IDENT]: %s =", let_.let.literal, let_.name.ident.literal);
     printExpression(let_.expr, 2);
 }
 
@@ -53,9 +54,9 @@ void printExpression(Expression* expr, int indent = 0)
     case ExpressionType.Unary:
         printUnaryExpression(expr.unary, indent + 1);
         break;
-        // case ExpressionType.Literal:
-        //     writefln("%sLiteral: %s", pad, expr.literal.value.toString());
-        //     break;
+    case ExpressionType.Literal:
+        printLiteral(expr.literal, indent);
+        break;
         // case ExpressionType.Identifier:
         //     writefln("%sIdentifier: %s", pad, expr.ident.literal);
         //     break;
@@ -69,8 +70,8 @@ void printBinaryExpression(BinaryExpression* bin, int indent = 0)
 {
     auto pad = "\t".repeat(indent);
     writeln(pad, "BinaryExpression:");
+    writefln("%sOperator: %s", pad, bin.operator.literal); // prefix expression
     printExpression(bin.left, indent + 1);
-    writefln("%sOperator: %s", pad, bin.operator.literal);
     printExpression(bin.right, indent + 1);
 }
 
@@ -80,4 +81,21 @@ void printUnaryExpression(UnaryExpression* unary, int indent = 0)
     writeln(pad, "UnaryExpression:");
     writefln("%sOperator: %s", pad, unary.operator.literal);
     printExpression(unary.expr, indent + 1);
+}
+
+void printLiteral(Literal* lit, int indent = 0)
+{
+    auto pad = "\t".repeat(indent);
+    final switch (lit.type)
+    {
+    case LiteralType.Int:
+        writefln("%sLiteral[Int]: %d", pad, lit.num);
+        break;
+    case LiteralType.String:
+        writefln("%sLiteral[String]: \"%s\"", pad, lit.str);
+        break;
+    case LiteralType.Bool:
+        writefln("%sLiteral[Bool]: %s", pad, lit.val ? "true" : "false");
+        break;
+    }
 }

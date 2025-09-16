@@ -5,6 +5,7 @@ import syntax.program;
 import syntax.expressions;
 import syntax.identifier;
 import std.stdio;
+import syntax.literal;
 
 class Parser
 {
@@ -183,8 +184,20 @@ class Parser
 
     Expression* parsePrimary()
     {
-        // return literal value from expression
-        // if '(' parse expression and then consume ')'
+        if (match(TokenType.Int))
+        {
+            auto lit = makeIntegerLiteral(previous().literal);
+            return makeLiteralExpression(lit);
+        }
+
+        if (match(TokenType.String))
+        {
+            auto lit = makeStringLiteral(previous().literal);
+            return makeLiteralExpression(lit);
+        }
+        // TODO: parse Parenthesis
+        // TODO: use switch statement
+
         return null;
     }
 

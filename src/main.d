@@ -23,6 +23,7 @@ void main(string[] args)
         writefln("TOKENS: %d", tokens.length);
         auto parser = new Parser(tokens).parseProgram();
         writeln(parser.statements.length);
+        printAst(parser.statements);
     }
 
 }
