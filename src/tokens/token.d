@@ -14,6 +14,7 @@ enum TokenType
     Minus,
     Bang,
     Asterisk,
+    Slash,
     NotEqual, // !=
     EqualEqual, // ==
 
