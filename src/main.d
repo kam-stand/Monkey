@@ -21,9 +21,10 @@ void main(string[] args)
         auto lexer = new Lexer(source_file);
         auto tokens = lexer.lexSource();
         writefln("TOKENS: %d", tokens.length);
-        auto parser = new Parser(tokens).parseProgram();
-        writeln(parser.statements.length);
-        printAst(parser.statements);
+        auto parser = new Parser(tokens);
+        auto program = parser.parseProgram();
+        writefln("STATEMENTS: %d", program.statements.length);
+        printAst(program.statements);
     }
 
 }

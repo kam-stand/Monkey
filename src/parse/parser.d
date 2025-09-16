@@ -9,25 +9,25 @@ import syntax.literal;
 
 class Parser
 {
-    Token*[] tokens;
-    int index = 0;
+    private Token*[] tokens;
+    private int index = 0;
 
     this(Token*[] tokens)
     {
         this.tokens = tokens;
     }
 
-    Token* peek()
+    private Token* peek()
     {
         return tokens[index];
     }
 
-    bool isAtEnd()
+    private bool isAtEnd()
     {
         return peek().type == TokenType.Eof;
     }
 
-    bool match(TokenType type)
+    private bool match(TokenType type)
     {
         if (peek().type == type)
         {
@@ -37,12 +37,12 @@ class Parser
         return false;
     }
 
-    Token* previous()
+    private Token* previous()
     {
         return tokens[index - 1];
     }
 
-    Token* advance()
+    private Token* advance()
     {
         if (!isAtEnd())
             index++;
@@ -62,7 +62,7 @@ class Parser
         return Program(statements);
     }
 
-    Statement* parseStatement()
+    private Statement* parseStatement()
     {
         switch (peek().type)
         {
@@ -79,7 +79,7 @@ class Parser
         return null;
     }
 
-    Statement* parseLetStatement()
+    private Statement* parseLetStatement()
     {
         // We are at "let"
         auto letTok = peek();
@@ -108,12 +108,12 @@ class Parser
         return letStmt;
     }
 
-    Expression* parseExpression()
+    private Expression* parseExpression()
     {
         return parseEquality();
     }
 
-    Expression* parseEquality()
+    private Expression* parseEquality()
     {
         auto expr = parseComparision();
 
@@ -128,7 +128,7 @@ class Parser
         return expr;
     }
 
-    Expression* parseComparision()
+    private Expression* parseComparision()
     {
         auto expr = parseTerm();
 
@@ -143,7 +143,7 @@ class Parser
         return expr;
     }
 
-    Expression* parseTerm()
+    private Expression* parseTerm()
     {
         auto expr = parseFactor();
         while (match(TokenType.Minus) || match(TokenType.Plus))
@@ -156,7 +156,7 @@ class Parser
         return expr;
     }
 
-    Expression* parseFactor()
+    private Expression* parseFactor()
     {
         auto expr = parseUnary();
         while (match(TokenType.Asterisk) || match(TokenType.Slash))
@@ -170,7 +170,7 @@ class Parser
         return expr;
     }
 
-    Expression* parseUnary()
+    private Expression* parseUnary()
     {
         // match on '!' or '-'
         if (match(TokenType.Minus) || match(TokenType.Bang))
@@ -182,7 +182,7 @@ class Parser
         return parsePrimary();
     }
 
-    Expression* parsePrimary()
+    private Expression* parsePrimary()
     {
         if (match(TokenType.Int))
         {

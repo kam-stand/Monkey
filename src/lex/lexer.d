@@ -6,20 +6,20 @@ import std.ascii : isAlpha, isDigit;
 
 class Lexer
 {
-    ubyte[] source_file;
-    int index = 0;
+    private ubyte[] source_file;
+    private int index = 0;
 
     this(ubyte[] source_file)
     {
         this.source_file = source_file;
     }
 
-    bool isAtEnd()
+    private bool isAtEnd()
     {
         return index >= source_file.length;
     }
 
-    bool isWhiteSpace(char c)
+    private bool isWhiteSpace(char c)
     {
         if (c == ' ' || c == '\t' || c == '\n')
             return true;
@@ -27,16 +27,16 @@ class Lexer
         return false;
     }
 
-    char peek()
+    private char peek()
     {
         return source_file[index];
     }
 
-    char peekNext()
+    private char peekNext()
     {
         return source_file[index + 1];
     }
-
+    // TODO: Improve moving token.
     Token*[] lexSource()
     {
         Token*[] tokens;
@@ -152,7 +152,7 @@ class Lexer
         return tokens;
     }
 
-    Token* lexNumber()
+    private Token* lexNumber()
     {
         int start = index;
         while (!isAtEnd() && isDigit(peek()))
@@ -164,7 +164,7 @@ class Lexer
         return initToken(TokenType.Int, literal);
     }
 
-    Token* lexLetter()
+    private Token* lexLetter()
     {
 
         int start = index;
@@ -177,7 +177,7 @@ class Lexer
         return initToken(type, literal);
     }
 
-    Token* lexString()
+    private Token* lexString()
     {
         int start = index + 1; // skip opening quote
         index++;

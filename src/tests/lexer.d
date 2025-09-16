@@ -7,9 +7,8 @@ unittest
     string content = "{}()+/*-;,";
     auto source_file = cast(ubyte[]) content;
     Lexer lexer = new Lexer(source_file);
+    assert(lexer !is null); // assert lexer class exists
 
-    assert(lexer.source_file !is null); // MUST INSTANTIATE WITH SOURCE_FILE
-    assert(lexer.index == 0);
 }
 
 unittest
