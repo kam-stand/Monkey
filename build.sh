@@ -2,9 +2,9 @@
 set -e  # stop on first error
 
 APP="monkey"
-SRC="src"
+SRC="src/*"
 BIN="bin"
-MAIN="main.d"
+MAIN="src/main.d"
 
 mkdir -p $BIN
 
