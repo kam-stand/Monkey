@@ -8,6 +8,7 @@ enum TokenType
     Ident,
     Int,
     String,
+    Null,
     // operators
     Assign,
     Plus,
@@ -56,7 +57,8 @@ static const TokenType[string] keywords = [
     "else": TokenType.Else,
     "return": TokenType.Return,
     "true": TokenType.True,
-    "false": TokenType.False
+    "false": TokenType.False,
+    "null": TokenType.Null
 
 ];
 

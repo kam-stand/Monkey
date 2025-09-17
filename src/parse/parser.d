@@ -226,6 +226,11 @@ class Parser
             auto lit = makeStringLiteral(previous().literal);
             return makeLiteralExpression(lit);
         }
+        if (match(TokenType.Null))
+        {
+            auto lit = makeNullLiteral(previous().literal);
+            return makeLiteralExpression(lit);
+        }
         if (match(TokenType.LeftParen))
         {
             auto expr = parseExpression();
@@ -240,6 +245,12 @@ class Parser
         {
             auto lit = makeBooleanLiteral(previous().literal);
             return makeLiteralExpression(lit);
+        }
+
+        if (match(TokenType.Ident))
+        {
+            auto ident = makeIdentifier(previous());
+            return makeIdentExpression(ident);
         }
 
         throw new Exception("Parse error: cannot parse primary");

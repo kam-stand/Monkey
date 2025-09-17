@@ -5,7 +5,8 @@ enum LiteralType
 {
     Int,
     String,
-    Bool
+    Bool,
+    Null
 }
 
 struct Literal
@@ -40,5 +41,14 @@ Literal* makeBooleanLiteral(string val)
     auto literal = new Literal();
     literal.type = LiteralType.Bool;
     literal.val = to!bool(val); // convert token literal (string) --> boolean
+    return literal;
+}
+
+Literal* makeNullLiteral(string str)
+{
+
+    auto literal = new Literal();
+    literal.type = LiteralType.Null;
+    literal.str = str;
     return literal;
 }
