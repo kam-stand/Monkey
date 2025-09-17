@@ -27,6 +27,15 @@ class Lexer
         return false;
     }
 
+    private char advance()
+    {
+        if (!isAtEnd())
+        {
+            return source_file[index++];
+        }
+        return '\0';
+    }
+
     private char peek()
     {
         return source_file[index];
