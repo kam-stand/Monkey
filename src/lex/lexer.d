@@ -8,6 +8,7 @@ class Lexer
 {
     private ubyte[] source_file;
     private int index = 0;
+    private Token*[] tokens = [];
 
     this(ubyte[] source_file)
     {
@@ -52,14 +53,14 @@ class Lexer
         return source_file[index];
     }
 
-    private char peekNext()
+    void addToken(TokenType type, string literal)
     {
-        return source_file[index + 1];
+        this.tokens ~= initToken(type, literal);
     }
+
     // TODO: Improve moving token.
     Token*[] lexSource()
     {
-        Token*[] tokens;
 
         while (!isAtEnd())
         {
@@ -68,65 +69,65 @@ class Lexer
             {
             case '+':
                 advance();
-                tokens ~= initToken(TokenType.Plus, "+");
+                addToken(TokenType.Plus, "+");
                 break;
             case '-':
                 advance();
-                tokens ~= initToken(TokenType.Minus, "-");
+                addToken(TokenType.Minus, "-");
                 break;
             case '!':
                 advance();
                 if (match('='))
-                    tokens ~= initToken(TokenType.NotEqual, "!=");
+                    addToken(TokenType.NotEqual, "!=");
                 else
-                    tokens ~= initToken(TokenType.Bang, "!");
+                    addToken(TokenType.Bang, "!");
                 break;
             case '*':
                 advance();
-                tokens ~= initToken(TokenType.Asterisk, "*");
+                addToken(TokenType.Asterisk, "*");
                 break;
             case '/':
                 advance();
-                tokens ~= initToken(TokenType.Slash, "/");
+                addToken(TokenType.Slash, "/");
                 break;
             case '>':
                 advance();
-                tokens ~= initToken(TokenType.GreaterThan, ">");
+                addToken(TokenType.GreaterThan, ">");
                 break;
             case '<':
                 advance();
-                tokens ~= initToken(TokenType.LessThan, "<");
+                addToken(TokenType.LessThan, "<");
                 break;
             case '=':
                 advance();
                 if (match('='))
-                    tokens ~= initToken(TokenType.EqualEqual, "==");
+                    addToken(TokenType.EqualEqual, "==");
                 else
-                    tokens ~= initToken(TokenType.Assign, "=");
+                    addToken(TokenType.Assign, "=");
                 break;
             case ';':
                 advance();
-                tokens ~= initToken(TokenType.Semicolon, ";");
+                addToken(TokenType.Semicolon, ";");
                 break;
             case ',':
                 advance();
-                tokens ~= initToken(TokenType.Comma, ",");
+                addToken(TokenType.Comma, ",");
                 break;
             case '{':
                 advance();
-                tokens ~= initToken(TokenType.LeftBrace, "{");
+                addToken(TokenType.LeftBrace, "{");
                 break;
             case '}':
                 advance();
-                tokens ~= initToken(TokenType.RightBrace, "}");
+                addToken(TokenType.RightBrace, "}");
                 break;
             case '(':
                 advance();
-                tokens ~= initToken(TokenType.LeftParen, "(");
+                addToken(TokenType.LeftParen, "(");
                 break;
             case ')':
                 advance();
-                tokens ~= initToken(TokenType.RightParen, ")");
+                addToken(TokenType.RightParen, ")");
                 break;
             case ' ', '\t', '\n': // skip whitespaces 
                 advance();
@@ -134,31 +135,31 @@ class Lexer
             default:
                 if (isDigit(c))
                 {
-                    tokens ~= lexNumber();
+                    lexNumber();
                 }
                 else if (isAlpha(c))
                 {
-                    tokens ~= lexIdent();
+                    lexIdent();
                 }
                 else if (c == '"')
                 {
-                    tokens ~= lexString();
+                    lexString();
                 }
                 else
                 {
                     // skip unknown characters
-                    tokens ~= initToken(TokenType.Illegal, advance().to!string);
+                    addToken(TokenType.Illegal, advance().to!string);
                 }
                 break;
             }
         }
 
         // EOF token
-        tokens ~= initToken(TokenType.Eof, "");
+        addToken(TokenType.Eof, "");
         return tokens;
     }
 
-    private Token* lexNumber()
+    private void lexNumber()
     {
         int start = index;
         while (!isAtEnd() && isDigit(peek()))
@@ -167,10 +168,10 @@ class Lexer
         }
 
         auto literal = cast(string) source_file[start .. index];
-        return initToken(TokenType.Int, literal);
+        addToken(TokenType.Int, literal);
     }
 
-    private Token* lexIdent()
+    private void lexIdent()
     {
 
         int start = index;
@@ -180,10 +181,10 @@ class Lexer
         }
         auto literal = cast(string) source_file[start .. index];
         auto type = lookUpIdent(literal);
-        return initToken(type, literal);
+        addToken(type, literal);
     }
 
-    private Token* lexString()
+    private void lexString()
     {
         advance(); // consume '"' opening quote
         int start = index;
@@ -196,7 +197,7 @@ class Lexer
         auto literal = cast(string) source_file[start .. index];
         advance(); // comsume '"' closing quote
 
-        return initToken(TokenType.String, literal);
+        addToken(TokenType.String, literal);
     }
 
 }
