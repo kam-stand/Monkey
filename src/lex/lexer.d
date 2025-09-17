@@ -128,21 +128,21 @@ class Lexer
                 advance();
                 tokens ~= initToken(TokenType.RightParen, ")");
                 break;
-            case ' ', '\t', '\n': // white spaces 
-                advance(); // just skip
+            case ' ', '\t', '\n': // skip whitespaces 
+                advance();
                 break;
             default:
                 if (isDigit(c))
                 {
-                    tokens ~= lexNumber(); // lexNumber advances index
+                    tokens ~= lexNumber();
                 }
                 else if (isAlpha(c))
                 {
-                    tokens ~= lexLetter(); // lexLetter advances index
+                    tokens ~= lexIdent();
                 }
                 else if (c == '"')
                 {
-                    tokens ~= lexString(); // lexString advances index
+                    tokens ~= lexString();
                 }
                 else
                 {
@@ -170,7 +170,7 @@ class Lexer
         return initToken(TokenType.Int, literal);
     }
 
-    private Token* lexLetter()
+    private Token* lexIdent()
     {
 
         int start = index;
