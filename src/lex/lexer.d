@@ -36,6 +36,17 @@ class Lexer
         return '\0';
     }
 
+    private bool match(char expected)
+    {
+        if (isAtEnd)
+            return false;
+
+        if (peek() != expected)
+            return false;
+        advance();
+        return true;
+    }
+
     private char peek()
     {
         return source_file[index];
@@ -71,15 +82,10 @@ class Lexer
                 break;
             case '!':
                 advance();
-                if (peek() == '=')
-                {
-                    advance();
+                if (match('='))
                     tokens ~= initToken(TokenType.NotEqual, "!=");
-                }
                 else
-                {
                     tokens ~= initToken(TokenType.Bang, "!");
-                }
                 break;
             case '*':
                 advance();
@@ -99,15 +105,10 @@ class Lexer
                 break;
             case '=':
                 advance();
-                if (peek() == '=')
-                {
-                    advance();
+                if (match('='))
                     tokens ~= initToken(TokenType.EqualEqual, "==");
-                }
                 else
-                {
                     tokens ~= initToken(TokenType.Assign, "=");
-                }
                 break;
             case ';':
                 advance();
@@ -149,7 +150,7 @@ class Lexer
                 else
                 {
                     // skip unknown characters
-                    tokens ~= initToken(TokenType.Illegal, advance.to!string);
+                    tokens ~= initToken(TokenType.Illegal, advance().to!string);
                 }
                 break;
             }
