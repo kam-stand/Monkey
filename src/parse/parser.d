@@ -214,7 +214,6 @@ class Parser
     private Expression* parsePrimary()
     {
 
-        // TODO: use switch statement
         // TODO: parse booleans
         if (match(TokenType.Int))
         {
@@ -235,6 +234,12 @@ class Parser
                 throw new Exception("Parse error: expected ')' after expression.");
             }
             return expr;
+        }
+
+        if (match(TokenType.True) || match(TokenType.False))
+        {
+            auto lit = makeBooleanLiteral(previous().literal);
+            return makeLiteralExpression(lit);
         }
 
         throw new Exception("Parse error: cannot parse primary");
