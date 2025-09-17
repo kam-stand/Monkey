@@ -56,82 +56,82 @@ class Lexer
 
             if (isWhiteSpace(c)) // skip white spaces
             {
-                index++;
+                advance();
                 continue;
             }
             switch (c)
             {
             case '+':
+                advance();
                 tokens ~= initToken(TokenType.Plus, "+");
-                index++;
                 break;
             case '-':
+                advance();
                 tokens ~= initToken(TokenType.Minus, "-");
-                index++;
                 break;
             case '!':
-                if (!isAtEnd() && peekNext() == '=')
+                advance();
+                if (peek() == '=')
                 {
+                    advance();
                     tokens ~= initToken(TokenType.NotEqual, "!=");
-                    index += 2; // consume both '!' and '='
                 }
                 else
                 {
                     tokens ~= initToken(TokenType.Bang, "!");
-                    index++;
                 }
                 break;
             case '*':
+                advance();
                 tokens ~= initToken(TokenType.Asterisk, "*");
-                index++;
                 break;
             case '/':
+                advance();
                 tokens ~= initToken(TokenType.Slash, "/");
-                index++;
                 break;
             case '>':
+                advance();
                 tokens ~= initToken(TokenType.GreaterThan, ">");
-                index++;
                 break;
             case '<':
+                advance();
                 tokens ~= initToken(TokenType.LessThan, "<");
-                index++;
                 break;
             case '=':
-                if (!isAtEnd() && peekNext() == '=')
+                advance();
+                if (peek() == '=')
                 {
+                    advance();
                     tokens ~= initToken(TokenType.EqualEqual, "==");
-                    index += 2;
                 }
                 else
                 {
                     tokens ~= initToken(TokenType.Assign, "=");
-                    index++;
                 }
                 break;
             case ';':
+                advance();
                 tokens ~= initToken(TokenType.Semicolon, ";");
-                index++;
                 break;
             case ',':
+                advance();
                 tokens ~= initToken(TokenType.Comma, ",");
-                index++;
                 break;
             case '{':
+                advance();
                 tokens ~= initToken(TokenType.LeftBrace, "{");
-                index++;
                 break;
             case '}':
+                advance();
                 tokens ~= initToken(TokenType.RightBrace, "}");
-                index++;
                 break;
             case '(':
+                advance();
                 tokens ~= initToken(TokenType.LeftParen, "(");
-                index++;
                 break;
             case ')':
+                advance();
                 tokens ~= initToken(TokenType.RightParen, ")");
-                index++;
                 break;
             default:
                 if (isDigit(c))
@@ -149,8 +149,7 @@ class Lexer
                 else
                 {
                     // skip unknown characters
-                    tokens ~= initToken(TokenType.Illegal, c.to!string);
-                    index++;
+                    tokens ~= initToken(TokenType.Illegal, advance.to!string);
                 }
                 break;
             }
@@ -177,9 +176,9 @@ class Lexer
     {
 
         int start = index;
-        while (!isAtEnd() && isAlpha(peek()))
+        while (isAlpha(peek()))
         {
-            index++;
+            advance();
         }
         auto literal = cast(string) source_file[start .. index];
         auto type = lookUpIdent(literal);
@@ -188,16 +187,16 @@ class Lexer
 
     private Token* lexString()
     {
-        int start = index + 1; // skip opening quote
-        index++;
+        advance(); // consume '"' opening quote
+        int start = index;
 
         while (!isAtEnd() && peek() != '"')
         {
-            index++;
+            advance();
         }
 
         auto literal = cast(string) source_file[start .. index];
-        index++; // skip closing quote
+        advance(); // comsume '"' closing quote
 
         return initToken(TokenType.String, literal);
     }
