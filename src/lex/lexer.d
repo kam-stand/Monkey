@@ -64,12 +64,6 @@ class Lexer
         while (!isAtEnd())
         {
             char c = peek();
-
-            if (isWhiteSpace(c)) // skip white spaces
-            {
-                advance();
-                continue;
-            }
             switch (c)
             {
             case '+':
@@ -133,6 +127,9 @@ class Lexer
             case ')':
                 advance();
                 tokens ~= initToken(TokenType.RightParen, ")");
+                break;
+            case ' ', '\t', '\n': // white spaces 
+                advance(); // just skip
                 break;
             default:
                 if (isDigit(c))
