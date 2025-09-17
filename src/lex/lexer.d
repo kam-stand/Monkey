@@ -58,7 +58,6 @@ class Lexer
         this.tokens ~= initToken(type, literal);
     }
 
-    // TODO: Improve moving token.
     Token*[] lexSource()
     {
 
