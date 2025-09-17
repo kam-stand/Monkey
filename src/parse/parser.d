@@ -71,10 +71,9 @@ class Parser
         case TokenType.Return:
             return parseReturnStatement();
         default:
-            break;
+            return parseExpressionStatement();
         }
-        // TODO: better error handling
-        return null;
+        throw new Exception("Parse error: cannot parse statement.");
     }
 
     private Statement* parseLetStatement()
@@ -86,16 +85,14 @@ class Parser
         // Exprect 'Ident'
         if (!match(TokenType.Ident))
         {
-            writeln("Parse error: expected identifier after 'let'.");
-            return null;
+            throw new Exception("Parse error: expected identifier after 'let'.");
         }
         auto identTok = previous();
 
         // Expect '='
         if (!match(TokenType.Assign))
         {
-            writeln("Parse error: expected '=' after identifier in let statement.");
-            return null;
+            throw new Exception("Parse error: expected '=' after identifier in let statement.");
         }
 
         // Parse the RHS 
@@ -105,8 +102,7 @@ class Parser
         if (!match(TokenType.Semicolon))
         {
 
-            writeln("Parse error: expected ';' after expression.");
-            return null;
+            throw new Exception("Parse error : expected';' after expression.");
         }
         // Construct the AST node
         auto letStmt = makeLetStatement(letTok, expr, identTok);
@@ -124,10 +120,21 @@ class Parser
         // Exprect ';'
         if (!match(TokenType.Semicolon))
         {
-            writeln("Parse errorL expected ';' after expression in return statement.");
-            return null;
+            throw new Exception("Parse errorL expected ';' after expression in return statement.");
         }
         return makeReturnStatement(ret_, expr);
+    }
+
+    private Statement* parseExpressionStatement()
+    {
+        auto expr = parseExpression();
+        if (!match(TokenType.Semicolon))
+        {
+
+            throw new Exception("Parse error expected ';' after expression in return statement.");
+        }
+
+        return makeExpressionStatement(expr);
     }
 
     private Expression* parseExpression()
@@ -206,6 +213,9 @@ class Parser
 
     private Expression* parsePrimary()
     {
+
+        // TODO: use switch statement
+        // TODO: parse booleans
         if (match(TokenType.Int))
         {
             auto lit = makeIntegerLiteral(previous().literal);
@@ -222,14 +232,12 @@ class Parser
             auto expr = parseExpression();
             if (!match(TokenType.RightParen))
             {
-                writeln("Parse error: expected ')' after expression.");
-                return null;
+                throw new Exception("Parse error: expected ')' after expression.");
             }
             return expr;
         }
-        // TODO: use switch statement
 
-        return null;
+        throw new Exception("Parse error: cannot parse primary");
     }
 
 }

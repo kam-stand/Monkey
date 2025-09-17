@@ -7,6 +7,12 @@ enum StatementType
 {
     LetStatement,
     ReturnStatement,
+    ExpressionStatement,
+}
+
+struct ExpressionStatement
+{
+    Expression* expr;
 }
 
 struct ReturnStatement
@@ -29,6 +35,7 @@ struct Statement
     {
         ReturnStatement* return_;
         LetStatement* let_;
+        ExpressionStatement* expr_;
     }
 }
 
@@ -46,5 +53,13 @@ Statement* makeLetStatement(Token* let, Expression* expr, Token* ident)
     statement.type = StatementType.LetStatement;
     auto name = makeIdentifier(ident);
     statement.let_ = new LetStatement(let, name, expr);
+    return statement;
+}
+
+Statement* makeExpressionStatement(Expression* expr)
+{
+    auto statement = new Statement();
+    statement.type = StatementType.ExpressionStatement;
+    statement.expr_ = new ExpressionStatement(expr);
     return statement;
 }

@@ -31,7 +31,8 @@ void printAst(Statement*[] statements)
             printReturnStatement(stmt.return_);
             break;
         default:
-            writeln("Unknown statement");
+            writeln("ExpressionStatement: ");
+            printExpression(stmt.expr_.expr);
             break;
         }
     }
@@ -39,16 +40,18 @@ void printAst(Statement*[] statements)
 
 void printLetStatement(LetStatement* let_)
 {
-    writeln("LetStatement:");
-    writefln("\t%s\n\t[IDENT]: %s =", let_.let.literal, let_.name.ident.literal);
+    writeln("\tKeyword: ", let_.let.literal);
+    writeln("\tIdentifier: ", let_.name.ident.literal);
+    writeln("\tInitializer:");
     printExpression(let_.expr, 2);
+
 }
 
 void printReturnStatement(ReturnStatement* ret_)
 {
 
-    writeln("ReturnStatement:");
-    writefln("\t\n\t[RETURN]: %s =", ret_.ret.literal);
+    writeln("\tKeyword: ", ret_.ret.literal);
+    writeln("\tValue:");
     printExpression(ret_.expr, 2);
 
 }
@@ -56,7 +59,6 @@ void printReturnStatement(ReturnStatement* ret_)
 void printExpression(Expression* expr, int indent = 0)
 {
     auto pad = "\t".repeat(indent);
-    writeln(pad, "Expression:");
 
     switch (expr.type)
     {
