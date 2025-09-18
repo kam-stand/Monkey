@@ -1,0 +1,188 @@
+// -----------------------------
+// Monkey Language Grammar
+// -----------------------------
+//
+// program             := statement*
+// statement           := letStatement | returnStatement | expressionStatement
+// letStatement        := "let" identifier "=" expression ";"
+// returnStatement     := "return" expression ";"
+// expressionStatement := expression ";"
+// expression          := identifier | integerLiteral | booleanLiteral | stringLiteral
+//                        | prefixExpression | infixExpression | ifExpression
+//                        | functionLiteral | callExpression | groupedExpression
+// prefixExpression    := ("!" | "-") expression
+// infixExpression     := expression operator expression
+// ifExpression        := "if" "(" expression ")" blockStatement ("else" blockStatement)?
+// functionLiteral     := "fn" "(" parameters? ")" blockStatement
+// callExpression      := expression "(" arguments? ")"
+// groupedExpression   := "(" expression ")"
+// blockStatement      := "{" statement* "}"
+// parameters          := identifier ("," identifier)*
+// arguments           := expression ("," expression)*
+// operator            := "+" | "-" | "*" | "/" | "==" | "!=" | "<" | ">"
+
+// -----------------------------
+// Top-Level Parser Functions
+// -----------------------------
+
+function parseProgram():
+    statements = []
+    while not atEnd():
+        statements.append(parseStatement())
+    return Program(statements)
+
+// -----------------------------
+// Statements
+// -----------------------------
+
+function parseStatement():
+    switch currentToken:
+        case "let":
+            return parseLetStatement()
+        case "return":
+            return parseReturnStatement()
+        default:
+            return parseExpressionStatement()
+
+function parseLetStatement():
+    consume("let")
+    name = expectIdentifier()
+    consume("=")
+    value = parseExpression()
+    consume(";")
+    return LetStatement(name, value)
+
+function parseReturnStatement():
+    consume("return")
+    value = parseExpression()
+    consume(";")
+    return ReturnStatement(value)
+
+function parseExpressionStatement():
+    expr = parseExpression()
+    consume(";")
+    return ExpressionStatement(expr)
+
+// -----------------------------
+// Expressions (recursive descent)
+// -----------------------------
+
+function parseExpression():
+    // Handle prefix or primary expressions
+    switch currentToken:
+        case identifier:
+            left = parseIdentifier()
+        case integer:
+            left = parseIntegerLiteral()
+        case boolean:
+            left = parseBooleanLiteral()
+        case string:
+            left = parseStringLiteral()
+        case "!":
+        case "-":
+            left = parsePrefixExpression()
+        case "if":
+            left = parseIfExpression()
+        case "fn":
+            left = parseFunctionLiteral()
+        case "(":
+            left = parseGroupedExpression()
+        default:
+            error("unexpected token in expression")
+
+    // Check for infix operators (simple recursion)
+    if currentToken is an infix operator:
+        operator = consumeToken()
+        right = parseExpression()
+        left = BinaryExpression(left, operator, right)
+
+    return left
+
+// -----------------------------
+// Prefix Expressions
+// -----------------------------
+
+function parsePrefixExpression():
+    operator = consumeToken()
+    right = parseExpression()
+    return PrefixExpression(operator, right)
+
+// -----------------------------
+// Primary Expressions
+// -----------------------------
+
+function parseIdentifier():
+    return Identifier(currentToken.literal)
+
+function parseIntegerLiteral():
+    return IntegerLiteral(currentToken.literal.toInt())
+
+function parseBooleanLiteral():
+    return BooleanLiteral(currentTokenIs("true"))
+
+function parseStringLiteral():
+    return StringLiteral(currentToken.literal)
+
+function parseGroupedExpression():
+    consume("(")
+    expr = parseExpression()
+    consume(")")
+    return expr
+
+function parseIfExpression():
+    consume("if")
+    consume("(")
+    condition = parseExpression()
+    consume(")")
+    consequence = parseBlockStatement()
+    alternative = null
+    if peekTokenIs("else"):
+        consume("else")
+        alternative = parseBlockStatement()
+    return IfExpression(condition, consequence, alternative)
+
+function parseFunctionLiteral():
+    consume("fn")
+    consume("(")
+    params = parseParameters()
+    consume(")")
+    body = parseBlockStatement()
+    return FunctionLiteral(params, body)
+
+function parseCallExpression(functionExpr):
+    consume("(")
+    args = parseArguments()
+    consume(")")
+    return CallExpression(functionExpr, args)
+
+// -----------------------------
+// Blocks, Parameters, and Arguments
+// -----------------------------
+
+function parseBlockStatement():
+    consume("{")
+    statements = []
+    while not peekTokenIs("}") and not atEnd():
+        statements.append(parseStatement())
+    consume("}")
+    return BlockStatement(statements)
+
+function parseParameters():
+    params = []
+    if peekTokenIs(")"):
+        return params
+    params.append(expectIdentifier())
+    while peekTokenIs(","):
+        consume(",")
+        params.append(expectIdentifier())
+    return params
+
+function parseArguments():
+    args = []
+    if peekTokenIs(")"):
+        return args
+    args.append(parseExpression())
+    while peekTokenIs(","):
+        consume(",")
+        args.append(parseExpression())
+    return args
