@@ -6,15 +6,16 @@ enum TokenType
     Eof,
     // Identifier, Literals
     Ident,
-    Int,
-    String,
+    Int, // 12, 3, 1
+    String, // "str"
+    Null, // null
     // operators
-    Assign,
-    Plus,
-    Minus,
-    Bang,
-    Asterisk,
-    Slash,
+    Assign, // =
+    Plus, // +
+    Minus, // -
+    Bang, // !
+    Asterisk, // *
+    Slash, // `/`
     NotEqual, // !=
     EqualEqual, // ==
 
@@ -22,13 +23,13 @@ enum TokenType
     LessThan, // <
 
     // Delimitters
-    Comma,
-    Semicolon,
+    Comma, // ,
+    Semicolon, // ;
 
-    LeftParen,
-    RightParen,
-    LeftBrace,
-    RightBrace,
+    LeftParen, // (
+    RightParen, // )
+    LeftBrace, // {
+    RightBrace, // }
 
     // keywords
     Function,
@@ -55,8 +56,7 @@ static const TokenType[string] keywords = [
     "if": TokenType.If,
     "else": TokenType.Else,
     "return": TokenType.Return,
-    "true": TokenType.True,
-    "false": TokenType.False
+    "null": TokenType.Null
 
 ];
 
