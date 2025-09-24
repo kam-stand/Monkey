@@ -71,9 +71,9 @@ void printExpression(Expression* expr, int indent = 0)
     case ExpressionType.Literal:
         printLiteral(expr.literal, indent);
         break;
-        // case ExpressionType.Identifier:
-        //     writefln("%sIdentifier: %s", pad, expr.ident.literal);
-        //     break;
+    case ExpressionType.Ident:
+        writefln("%sIdentifier: %s", pad, expr.ident.ident.literal);
+        break;
     default:
         writefln("%s<unknown expr>", pad);
         break;
@@ -111,5 +111,9 @@ void printLiteral(Literal* lit, int indent = 0)
     case LiteralType.Bool:
         writefln("%sLiteral[Bool]: %s", pad, lit.val ? "true" : "false");
         break;
+    case LiteralType.Null:
+        writefln("%sLiteral[Null]: %s", pad, lit.str);
+        break;
+
     }
 }

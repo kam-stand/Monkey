@@ -1,6 +1,7 @@
 module syntax.identifier;
 import tokens.token;
 import syntax.identifier;
+import syntax.literal;
 
 struct Identifier
 {

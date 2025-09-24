@@ -2,12 +2,14 @@ module syntax.statements;
 import tokens.token;
 import syntax.identifier;
 import syntax.expressions;
+import syntax.block_statement;
 
 enum StatementType
 {
     LetStatement,
     ReturnStatement,
     ExpressionStatement,
+    BlockStatement
 }
 
 struct ExpressionStatement
@@ -36,6 +38,7 @@ struct Statement
         ReturnStatement* return_;
         LetStatement* let_;
         ExpressionStatement* expr_;
+        BlockStatement* block_;
     }
 }
 
@@ -61,5 +64,13 @@ Statement* makeExpressionStatement(Expression* expr)
     auto statement = new Statement();
     statement.type = StatementType.ExpressionStatement;
     statement.expr_ = new ExpressionStatement(expr);
+    return statement;
+}
+
+Statement* makeBlockStatement(BlockStatement* block)
+{
+    auto statement = new Statement();
+    statement.type = StatementType.BlockStatement;
+    statement.block_ = block;
     return statement;
 }
